@@ -1,0 +1,41 @@
+{
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "build_all",
+            "command": "cd ${workspaceFolder}/build/; cmake -DCMAKE_BUILD_TYPE=Debug ..; make",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "build_run",
+            "command": "cd ${workspaceFolder}/build/; cmake -DCMAKE_BUILD_TYPE=Debug ..; make; ./bin/SkipList",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+    ],
+    "version": "2.0.0"
+}
