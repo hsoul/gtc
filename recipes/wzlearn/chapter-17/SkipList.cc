@@ -65,6 +65,7 @@ public:
     void insert(int v)
     {
         int new_node_max_level = randomLevel();
+        fmt::print("key <--> level {} {}\n", v, new_node_max_level);
         Node* new_node = new Node(v, new_node_max_level);
 
         Node* pre_node[new_node_max_level];
@@ -139,7 +140,7 @@ public:
     }
     void printAll()
     {
-        for (int i = max_level_; i >= 0; --i)
+        for (int i = max_level_ - 1; i >= 0; --i)
         {
             Node* node = head_->next_[i];
             fmt::print("第 {} 级\n[", i);
@@ -161,10 +162,11 @@ private:
     int randomLevel()
     {
         int level = 1;
-        std::default_random_engine rand_engine(::time(0));
-        std::uniform_real_distribution<float> uniform_dist(0, 1);
+        std::random_device rd; // 将用于获得随机数引擎的种子
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<double> uniform_dist(0, 1);
 
-        while (uniform_dist(rand_engine) < 0.5 && level < MAX_LEVEL)
+        while (uniform_dist(gen) < 0.5 && level < MAX_LEVEL)
             ++level;
 
         return level;
@@ -177,11 +179,11 @@ public:
 int main()
 {
     SkipList skip_list;
-    for (int i = 1; i < 50; ++i)
-    {
-        if (i % 3 == 0)
-            skip_list.insert(i);
-    }
+    // for (int i = 1; i < 50; ++i)
+    // {
+    //     if (i % 3 == 0)
+    //         skip_list.insert(i);
+    // }
     for (int i = 1; i < 50; ++i)
     {
         if (i % 3 == 1)
