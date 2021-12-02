@@ -95,7 +95,7 @@ public:
         int ret = -1;
         Node* pre_node[max_level_];
         Node* cur_pre_node = head_;
-        for (int i = max_level_ - 1; i >= 0; ++i)
+        for (int i = max_level_ - 1; i >= 0; --i)
         {
             while (cur_pre_node->next_[i] && cur_pre_node->next_[i]->value_ < v)
             {
@@ -124,7 +124,7 @@ public:
     Node* find(int v)
     {
         Node* pre_node = head_;
-        for (int i = max_level_ - 1; i >= 0; ++i) // NT : 从顶层索引向下搜索，毎循环一次向下一层，因为node有可能是在上面索引层搜索到的，上面索引层节点数量少故查找数量少，因此搜索高效
+        for (int i = max_level_ - 1; i >= 0; --i) // NT : 从顶层索引向下搜索，毎循环一次向下一层，因为node有可能是在上面索引层搜索到的，上面索引层节点数量少故查找数量少，因此搜索高效
         {
             while (pre_node->next_[i] && pre_node->next_[i]->value_ < v) // NT : 1 在本层找到pre_node直接下降到
             {
@@ -141,11 +141,12 @@ public:
     {
         for (int i = max_level_; i >= 0; --i)
         {
-            Node* node = head_[i].next_[i];
+            Node* node = head_->next_[i];
             fmt::print("第 {} 级\n[", i);
             while (node)
             {
                 fmt::print("{}  ", node->value_);
+                node = node->next_[i];
             }
             fmt::print("]\n");
         }
