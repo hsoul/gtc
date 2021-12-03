@@ -31,7 +31,6 @@ public:
 private:
     int value_;
     Node* next_[MAX_LEVEL];
-    int max_level_;
 };
 
 // 插入整数数据且不重复
@@ -53,6 +52,7 @@ public:
         , head_(NULL)
     {
         head_ = new Node();
+        rand_engine_.seed(5);
     }
     ~SkipList()
     {
@@ -65,7 +65,6 @@ public:
     void insert(int v)
     {
         int new_node_max_level = randomLevel();
-        fmt::print("key <--> level {} {}\n", v, new_node_max_level);
         Node* new_node = new Node(v, new_node_max_level);
 
         Node* pre_node[new_node_max_level];
@@ -109,11 +108,13 @@ public:
         if (pre_node[0]->next_[0] && pre_node[0]->next_[0]->value_ == v)
         {
             node = pre_node[0]->next_[0];
-            for (int i = 0; i < max_level_; ++i)
+            for (int i = max_level_ - 1; i >= 0; --i)
             {
                 if (pre_node[i]->next_[i] && pre_node[i]->next_[i]->value_ == v)
                 {
                     pre_node[i]->next_[i] = pre_node[i]->next_[i]->next_[i];
+                    if (!head_->next_[i])
+                        --max_level_;
                 }
             }
             ret = 0;
@@ -143,7 +144,7 @@ public:
         for (int i = max_level_ - 1; i >= 0; --i)
         {
             Node* node = head_->next_[i];
-            fmt::print("第 {} 级\n[", i);
+            fmt::print("第 {} 级 : [", i);
             while (node)
             {
                 fmt::print("{}  ", node->value_);
@@ -162,28 +163,30 @@ private:
     int randomLevel()
     {
         int level = 1;
-        std::random_device rd; // 将用于获得随机数引擎的种子
-        std::mt19937 gen(rd());
-        std::uniform_real_distribution<double> uniform_dist(0, 1);
+        std::uniform_real_distribution<double> uniform_dist(0.0, 1.0);
 
-        while (uniform_dist(gen) < 0.5 && level < MAX_LEVEL)
+        double ret = 0.0;
+        while ((ret = uniform_dist(rand_engine_)) < 0.5 && level < MAX_LEVEL)
+        {
             ++level;
+        }
 
         return level;
     }
 public:
     int max_level_;
     Node* head_; // 带头节点的链表
+    std::default_random_engine rand_engine_;
 };
 
 int main()
 {
     SkipList skip_list;
-    // for (int i = 1; i < 50; ++i)
-    // {
-    //     if (i % 3 == 0)
-    //         skip_list.insert(i);
-    // }
+    for (int i = 1; i < 50; ++i)
+    {
+        if (i % 3 == 0)
+            skip_list.insert(i);
+    }
     for (int i = 1; i < 50; ++i)
     {
         if (i % 3 == 1)
@@ -197,11 +200,19 @@ int main()
     else
         fmt::print("未找到查找到key为27节点\n");
 
-    int ret = skip_list.erase(46);
+    int ret = skip_list.erase(42);
     if (ret == 0)
-        fmt::print("成功删除key为46节点\n");
+        fmt::print("成功删除key为42节点\n");
     else
-        fmt::print("删除key为46节点失败\n");
+        fmt::print("删除key为42节点失败\n");
+
+    skip_list.printAll();
+
+    ret = skip_list.erase(22);
+    if (ret == 0)
+        fmt::print("成功删除key为22节点\n");
+    else
+        fmt::print("删除key为22节点失败\n");
 
     skip_list.printAll();
 
