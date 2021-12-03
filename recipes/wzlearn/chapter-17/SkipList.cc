@@ -17,13 +17,11 @@ class Node
 public:
     Node()
         : value_(-1)
-        , max_level_(0)
     {
         memset(next_, 0, sizeof(next_));
     }
-    Node(int v, int max_level)
+    Node(int v)
         : value_(v)
-        , max_level_(max_level)
     {
         memset(next_, 0, sizeof(next_));
     }
@@ -31,6 +29,8 @@ public:
 private:
     int value_;
     Node* next_[MAX_LEVEL];
+public:
+    int print_index_ = 0;
 };
 
 // 插入整数数据且不重复
@@ -43,6 +43,9 @@ private:
 第k-2级         1   3   5   7   9
 ...
 第0级(原始链表)  1 2 3 4 5 6 7 8 9
+
+数据结构：
+    1. 单链表的变种，一个节点只有一个数据指针，却有多层指针域，每层指针域组成单链表
 */
 class SkipList
 {
@@ -65,7 +68,7 @@ public:
     void insert(int v)
     {
         int new_node_max_level = randomLevel();
-        Node* new_node = new Node(v, new_node_max_level);
+        Node* new_node = new Node(v);
 
         Node* pre_node[new_node_max_level];
         for (int i = 0; i < new_node_max_level; ++i)
@@ -95,7 +98,7 @@ public:
         int ret = -1;
         Node* pre_node[max_level_];
         Node* cur_pre_node = head_;
-        for (int i = max_level_ - 1; i >= 0; --i)
+        for (int i = max_level_ - 1; i >= 0; --i) // 从最大层开始查找，找到每层的前一个节点，然后通过--i，下降到下一层再继续查找
         {
             while (cur_pre_node->next_[i] && cur_pre_node->next_[i]->value_ < v)
             {
@@ -141,13 +144,47 @@ public:
     }
     void printAll()
     {
+        Node* level_0_node = head_->next_[0];
+        int p_index = 0;
+        while (level_0_node)
+        {
+            level_0_node->print_index_ = p_index++;
+            level_0_node = level_0_node->next_[0];
+        }
+
         for (int i = max_level_ - 1; i >= 0; --i)
         {
             Node* node = head_->next_[i];
             fmt::print("第 {} 级 : [", i);
             while (node)
             {
-                fmt::print("{}  ", node->value_);
+                if (node == head_->next_[i])
+                {
+                    int diff = node->print_index_ - 0;
+                    if (diff > 0)
+                    {
+                        int long_space = diff * 4 + std::max(0, (diff - 1)) * 2 - 2;
+                        std::string space_str(2, ' ');
+                        space_str += std::string(long_space - 2, '-');
+                        fmt::print("{}", space_str);
+                    }
+                }
+                if (node->next_[i])
+                {
+                    int diff = node->next_[i]->print_index_ - node->print_index_;
+                    int long_space = diff * 4 + (diff - 1) * 2 - 2;
+                    std::string space_str(long_space / 2, '-');
+                    std::string l_str = std::string("--");
+                    std::string b_str = space_str + l_str + space_str;
+                    fmt::print("{:2d}{}", node->value_, b_str);
+                }
+                else
+                {
+                    int diff = p_index - node->print_index_;
+                    int long_space = diff * 4 + (diff - 1) * 2 - 2;
+                    std::string space_str(long_space, '-');
+                    fmt::print("{:-2d}{}", node->value_, space_str);
+                }
                 node = node->next_[i];
             }
             fmt::print("]\n");
@@ -175,7 +212,7 @@ private:
     }
 public:
     int max_level_;
-    Node* head_; // 带头节点的链表
+    Node* head_; // NT : 带头节点的链表
     std::default_random_engine rand_engine_;
 };
 
@@ -185,7 +222,10 @@ int main()
     for (int i = 1; i < 50; ++i)
     {
         if (i % 3 == 0)
+        {
+            // fmt::print("{} ", i);
             skip_list.insert(i);
+        }
     }
     for (int i = 1; i < 50; ++i)
     {
