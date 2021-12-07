@@ -25,7 +25,7 @@ class skiplist
 {
 public:
     using value_type = Value;
-    using hash_type = std::hash<value_type>;
+    using hash_type = std::hash<value_type>; // NT : 整数hash值直接返回输入值
     using key_type = typename hash_type::result_type;
     using size_type = size_t;
 private:
