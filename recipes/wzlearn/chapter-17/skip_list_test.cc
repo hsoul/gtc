@@ -57,6 +57,10 @@ int main()
 
     s.insert("7");
 
+    s.insert("2");
+    s.insert("4");
+    s.insert("5");
+
     // 4a. print()
     s.print(std::cout);
     std::cout << std::endl;

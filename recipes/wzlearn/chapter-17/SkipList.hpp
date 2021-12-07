@@ -144,7 +144,7 @@ private:
      */
     std::vector<node_type*> get_predecessors(const value_type& v) const
     {
-        const key_type target = hash_type()(v);
+        const key_type target = hash_type()(v); // NT : 以hash值为key插入跳表，不能保证插入数据顺序
         std::vector<node_type*> results(get_node_level(head), nullptr);
         node_type* x = head;
         for (size_type i = get_node_level(head); i > 0; --i)
