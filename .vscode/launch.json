@@ -8,7 +8,7 @@
             "name": "launch_debug",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/SkipList",
+            "program": "${workspaceFolder}/build/bin/skip_list_test",
             "args": [
                 // "/export/hudaqing/work/cxxfeature/CMakeLists.txt"
             ],
