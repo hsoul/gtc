@@ -21,7 +21,7 @@
         {
             "type": "shell",
             "label": "build_run",
-            "command": "cd ${workspaceFolder}/build/; cmake -DCMAKE_BUILD_TYPE=Debug ..; make; ./bin/skip_list_test",
+            "command": "cd ${workspaceFolder}/build/; cmake -DCMAKE_BUILD_TYPE=Debug ..; make; ./bin/hash_table_test",
             "group": {
                 "kind": "build",
                 "isDefault": true
