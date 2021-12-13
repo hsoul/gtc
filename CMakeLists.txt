@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.13.4) # CMake 最低版本号要求
 
-option(USE_CLANG "use clang as compiler" false)
+option(USE_CLANG "use clang as compiler" true)
 
 if (USE_CLANG) 
   set(CMAKE_ASM_COMPILER "clang") 
@@ -15,8 +15,14 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS_DEBUG "-g -ggdb -Wall -O0") # -save-temps 保存编译中间文件
 
 if (USE_CLANG) 
-  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field")
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-variable -Wno-unused-function -Wno-unused-private-field -fno-limit-debug-info")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libstdc++") # gnu libstdc++  clang libc++
+  add_compile_options(
+      -fsanitize=address
+      -fno-omit-frame-pointer
+      -fno-optimize-sibling-calls
+  )
+  add_link_options(-fsanitize=address) # 内存泄漏检测不能和gdb公用，在退出前必须gdb detach
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fcoroutines -fexceptions") # -fno-exceptions
 endif()
@@ -36,6 +42,7 @@ message(STATUS "${PROJECT_SOURCE_DIR}")
 
 include_directories(
   "${PROJECT_SOURCE_DIR}/include/fmt/include/"
+  "${PROJECT_SOURCE_DIR}/recipes/include/"
 )
 
 link_directories(

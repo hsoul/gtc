@@ -21,7 +21,25 @@
         {
             "type": "shell",
             "label": "build_run",
-            "command": "cd ${workspaceFolder}/build/; cmake -DCMAKE_BUILD_TYPE=Debug ..; make; ./bin/hash_table_test",
+            "command": "cd ${workspaceFolder}/build/; cmake -DCMAKE_BUILD_TYPE=Debug ..; make; ./bin/lru_base_hash_test",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": []
+        },
+        {
+            "type": "shell",
+            "label": "rebuild_all",
+            "command": "rm -rf ${workspaceFolder}/build; cmake -DCMAKE_BUILD_TYPE=Debug -DUSE_CLANG=true -H. -Bbuild; cd build; make -j 2",
             "group": {
                 "kind": "build",
                 "isDefault": true
