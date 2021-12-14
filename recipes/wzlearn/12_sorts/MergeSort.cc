@@ -86,7 +86,7 @@ void mergeBySentry(int a[], int p, int q, int r)
 
 void mergeSortInternally(int a[], int p, int r)
 {
-    if (p == r) // NT : 递归终止条件
+    if (p >= r) // NT : 递归终止条件
         return;
 
     int q = p + (r - p) / 2;
@@ -95,6 +95,14 @@ void mergeSortInternally(int a[], int p, int r)
     // merge(a, p, q, r);
     mergeBySentry(a, p, q, r);
 }
+
+/*
+
+思路：递归将待排序数组均分为两个区，直至排序数据为单个元素，然后合并拆分的数组，最终整体数组数据变为有序
+
+排序过程：
+
+*/
 
 void mergeSort(int a[], int n)
 {
